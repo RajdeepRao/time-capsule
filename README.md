@@ -1,4 +1,4 @@
-# time-capsule
+# Time-Capsule
 
 A google photos of sorts, but free (Or with min infra costs)
 The main aim is to build a light web UI over s3 to be able to browse and store media content that would otherwise blow through the tiers on google storage.
