@@ -5,7 +5,7 @@ The main aim is to build a light web UI over s3 to be able to browse and store m
 
 Thinking of it as a 2 parter
 1. All the infra in terraform
-2. ~ NextJS app for the FE to render some of these images/videos and such ~
+2. ~NextJS app for the FE to render some of these images/videos and such~
 2. Wrote this in a flask app with JINJA templates for FE
 
 Nice to haves
