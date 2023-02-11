@@ -29,3 +29,10 @@ override.tf.json
 # Include tfplan files to ignore the plan output of command: terraform plan -out=tfplan
 # example: *tfplan*
 **/plan*
+**/__pycache__/
+*.py[cod]
+*$py.class
+
+# Sensitive files that need to be env vars eventually
+firebase*.json
+firebase*.py
