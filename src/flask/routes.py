@@ -1,8 +1,10 @@
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, flash
 import os
 from views.signup import auth
 
 app = Flask(__name__)
+# Todo: Come back and env var this
+app.secret_key = "super secret key"
 
 users = [{'uid': 1, 'name': 'Noah Schairer'}]
 @app.route('/api/userinfo')
@@ -18,18 +20,28 @@ def authenticate_test():
     auth()
     return {'status': 'ok'}, 200
 
-@app.route('/signin', methods=['GET', 'POST'])
-def signin():
-    return render_template('signin.html')
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    data = request.form
+    print(data)
+    return render_template('login.html')
 
 @app.route('/signup', methods=['GET', 'POST'])
 def signup():
-    print('In the get')
     if request.method == 'POST':
-        username = request.form['username']
-        password = request.form['password']
-        print(request)
-        print(username + ' - ' + password)
+        email = request.form.get('email')
+        first_name = request.form.get('firstName')
+        password1 = request.form.get('password1')
+        password2 = request.form.get('password2')
+
+        if len(email) < 4:
+            flash('Email must be greater than 3 characters.', category='error')
+        elif len(first_name) < 2:
+            flash('First name must be greater than 1 character.', category='error')
+        elif password1 != password2:
+            flash('Passwords don\'t match.', category='error')
+        elif len(password1) < 7:
+            flash('Password must be at least 7 characters.', category='error')
     return render_template('signup.html')
 
 if __name__ == "__main__":
