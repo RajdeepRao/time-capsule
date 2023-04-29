@@ -9,7 +9,6 @@ Thinking of it as a 2 parter
 2. Wrote this in a flask app with JINJA templates for FE
 
 Nice to haves
-- Generate thumbnails 
-- Upload from the UI
-- WAF so that everyone can't access the Cloudfront URL
-- Auth so folks can have their own area in S3 to store stuff
+- Generate thumbnails
+
+For arch diagram and more docs please consider becoming a patron, jk they're [here](https://www.notion.so/Time-capsule-b5b6f8345bb7450aaa2f5cdf1ddd81d3)
