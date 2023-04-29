@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, flash
+from flask import Flask, render_template, request, flash, redirect, url_for
 import os
 from utils.firebase import TimeCapsuleFirebaseObj
 
@@ -24,8 +24,8 @@ def authenticate_test():
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
-    data = request.form
-    print(data)
+    email = request.form.get('email')
+    password = request.form.get('password')
     return render_template('login.html')
 
 @app.route('/signup', methods=['GET', 'POST'])
@@ -51,6 +51,8 @@ def signup():
             # Create new user in Firebase
             new_user = time_capsule_firebase_obj.create_user(email, password1)
             print(new_user)
+            flash('Account created!', category='success')
+            return redirect(url_for('home'))
     return render_template('signup.html')
 
 if __name__ == "__main__":
