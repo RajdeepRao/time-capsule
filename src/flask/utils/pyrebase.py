@@ -17,5 +17,6 @@ class TimeCapsulePyrebaseObj:
         return response
     
     def sign_user_out(self):
+        # This is bad, but there's no Sign out functionality in pyrebase yet
         self.auth.current_user = None
         return
