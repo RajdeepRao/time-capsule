@@ -26,7 +26,6 @@ def login_required(f):
     def wrap(*args, **kwargs):
         if 'logged_in' in session:
             if session['logged_in']:
-                print('checking login required...confirmed...redirecting')
                 return f(*args, **kwargs)
         else:
             flash("You need to login first", category='error')
@@ -53,7 +52,6 @@ def login():
     if request.method == 'POST':
         email = request.form.get('email')
         password = request.form.get('password')
-        print(f"{email} in the endpoint")
         try:
             response = time_capsule_pyrebase_obj.sign_user_in(email, password)
         except HTTPError as e:
