@@ -36,3 +36,4 @@ override.tf.json
 # Sensitive files that need to be env vars eventually
 firebase*.json
 firebase_*.py
+temp_secrets.py

@@ -3,3 +3,4 @@ firebase_admin==6.0.1
 Pyrebase4==4.4.0
 requests
 ipdb
+boto3
