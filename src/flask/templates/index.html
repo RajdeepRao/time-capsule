@@ -2,6 +2,11 @@
 {% block title %} Home bound {% endblock %}
 {% block content %}
 <h1>This is a Flask App containerised with Docker</h1>
+{% for c in content_urls %}
+  {% if c.endswith('.MP4') %}
+    {{c}}</br>
+  {%endif%}
+{% endfor %}
 <video width="320" height="240" controls>
     <source src="https://dazfl01h50k5a.cloudfront.net/videos/GX011140.MP4" type="video/mp4"/>
     Your browser does not support the video tag.

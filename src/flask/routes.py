@@ -59,7 +59,8 @@ def get_user_content(user_id):
     content_urls = []
     for content in contents:
         if content['Size']>0:
-            content_urls.append(content['Key'])
+            content_urls.append(CFD_BASE_URL+content['Key'])
+    print(content_urls)
     return content_urls
 
 @app.route('/', methods=['GET'])
@@ -67,7 +68,7 @@ def get_user_content(user_id):
 def home():
     print(session)
     content_urls = get_user_content(session['user_id'])
-    return render_template('index.html', content_urls)
+    return render_template('index.html', content_urls=content_urls)
 
 @app.route('/_meta', methods=['GET'])
 def authenticate_test():
