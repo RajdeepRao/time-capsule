@@ -69,7 +69,7 @@ resource "aws_cloudfront_distribution" "media_cloudfront_dist" {
   restrictions {
     geo_restriction {
       restriction_type = "whitelist"
-      locations        = ["US", "CA", "GB", "DE"]
+      locations        = ["US", "IN"]
     }
   }
 

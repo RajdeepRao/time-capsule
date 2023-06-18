@@ -26,7 +26,12 @@ s3_client = boto3.client('s3',
                 aws_secret_access_key=aws_secrets['AWS_SECRET_ACCESS_KEY'],
                 region_name='us-east-1')
 BUCKET_NAME='time-capsule-media'
+CFD_BASE_URL='https://dazfl01h50k5a.cloudfront.net/' # Todo: Store this as an env var also prob directly via terraform
 
+# session = {
+#     'logged_in':False,
+#     'user_id':None
+# }
 # To render the base app nav bar based on user session
 @app.context_processor
 def is_logged_in():
@@ -45,10 +50,24 @@ def login_required(f):
             return redirect(url_for('login'))
     return wrap
 
+def get_user_content(user_id):
+    response = s3_client.list_objects_v2(
+        Bucket=BUCKET_NAME,
+        Prefix=user_id
+    )
+    contents = response['Contents']
+    content_urls = []
+    for content in contents:
+        if content['Size']>0:
+            content_urls.append(content['Key'])
+    return content_urls
+
 @app.route('/', methods=['GET'])
 @login_required
 def home():
-    return render_template('index.html')
+    print(session)
+    content_urls = get_user_content(session['user_id'])
+    return render_template('index.html', content_urls)
 
 @app.route('/_meta', methods=['GET'])
 def authenticate_test():
@@ -70,6 +89,7 @@ def login():
         #ipdb.set_trace()
         session['logged_in'] = True
         session['email_id'] = email
+        session['user_id'] = response['localId']
         return redirect(url_for('home'))
     
     if 'logged_in' in session:
@@ -104,6 +124,7 @@ def signup():
             session['logged_in'] = True
             session['email_id'] = email
             firebase_user_id = new_user.uid
+            session['user_id'] = firebase_user_id
             s3_client.put_object(Bucket=BUCKET_NAME, Key=(firebase_user_id+'/'))
             return redirect(url_for('home'))
     
