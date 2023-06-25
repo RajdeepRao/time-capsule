@@ -27,17 +27,15 @@ s3_client = boto3.client('s3',
                 region_name='us-east-1')
 BUCKET_NAME='time-capsule-media'
 CFD_BASE_URL='https://dazfl01h50k5a.cloudfront.net/' # Todo: Store this as an env var also prob directly via terraform
+VIDEO_FILE_FORMATS = ['mp4']
+IMAGE_FILE_FORMATS = ['jpg','jpeg','png','gif','svg']
 
-# session = {
-#     'logged_in':False,
-#     'user_id':None
-# }
 # To render the base app nav bar based on user session
 @app.context_processor
 def is_logged_in():
     if 'logged_in' not in session:
         return dict(logged_in=False)
-    return dict(logged_in=session['logged_in'])
+    return dict(logged_in=session['logged_in'], user_email=session['email_id'])
 
 def login_required(f):
     @wraps(f)
@@ -56,10 +54,24 @@ def get_user_content(user_id):
         Prefix=user_id
     )
     contents = response['Contents']
-    content_urls = []
+    content_urls = {
+        'images':[],
+        'videos':[],
+        'text':[]
+        }
     for content in contents:
         if content['Size']>0:
-            content_urls.append(CFD_BASE_URL+content['Key'])
+            key = content['Key'].lower()
+            file_format = key.split('.')[-1]
+            print(file_format)
+            if file_format in VIDEO_FILE_FORMATS:
+                content_urls['videos'].append({'url':CFD_BASE_URL+content['Key'], 'date_modified':content['LastModified']})
+            elif file_format in IMAGE_FILE_FORMATS:
+                content_urls['images'].append({'url':CFD_BASE_URL+content['Key'], 'date_modified':content['LastModified']})
+            else:
+                content_urls['text'].append({'url':CFD_BASE_URL+content['Key'], 'date_modified':content['LastModified']})
+    content_urls['videos'] = sorted(content_urls['videos'], key=lambda c:c['date_modified'])
+    content_urls['images'] = sorted(content_urls['images'], key=lambda c:c['date_modified'], reverse=True)
     print(content_urls)
     return content_urls
 
