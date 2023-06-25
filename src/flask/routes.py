@@ -10,6 +10,7 @@ import requests
 from requests.exceptions import HTTPError
 import boto3
 from temp_secrets import aws_secrets # Todo: use param store or something in prod
+import datetime
 
 # local
 from utils.firebase_admin import TimeCapsuleFirebaseAdminObj
