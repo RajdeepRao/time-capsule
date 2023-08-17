@@ -4,3 +4,6 @@ Pyrebase4==4.4.0
 requests
 ipdb
 boto3
+rsa
+datetime
+cryptography
