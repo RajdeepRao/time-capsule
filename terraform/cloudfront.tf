@@ -62,6 +62,8 @@ resource "aws_cloudfront_distribution" "media_cloudfront_dist" {
     max_ttl                = 31536000
     compress               = true
     viewer_protocol_policy = "redirect-to-https"
+
+    trusted_key_groups = [aws_cloudfront_key_group.cf_public_keygroup.id]
   }
 
   price_class = "PriceClass_200"
@@ -76,4 +78,16 @@ resource "aws_cloudfront_distribution" "media_cloudfront_dist" {
   viewer_certificate {
     cloudfront_default_certificate = true
   }
+}
+
+resource "aws_cloudfront_public_key" "cf_public_key" {
+  comment     = "Timecapsule cloudfront public key created by terraform"
+  encoded_key = file("timecapsule_cf_public_key.pem")
+  name        = "timecapsule_cf_public_key_tf"
+}
+
+resource "aws_cloudfront_key_group" "cf_public_keygroup" {
+  comment = "Timecapsule cloudfront public key group created by terraform"
+  items   = [aws_cloudfront_public_key.cf_public_key.id]
+  name    = "timecapsule_cf_public_key_group_tf"
 }
