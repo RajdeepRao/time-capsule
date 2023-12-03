@@ -30,7 +30,9 @@
       <div class="card-body">
         <h4 class="card-title">{{c['title']}}</h4>
         <p class="card-text"><small class="text-muted">Last updated {{c['date_modified']}}</small></p>
-        <a href="#" class="btn btn-primary">Delete</a>
+        <form action="/delete" method="post">
+          <button name="deleteBtn" value="{{c}}" class="btn btn-primary" type="submit">Delete</button>
+        </form>
       </div>
     </div>
 {% endfor %}
