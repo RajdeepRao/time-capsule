@@ -10,7 +10,7 @@ CFD_BASE_URL='https://dazfl01h50k5a.cloudfront.net' # Todo: Store this as an env
 
 def generate_signed_urls(object_key):
     def rsa_signer(message):
-        with open(PATH_TO_LOCAL_PRIVATE_KEY, 'rb') as key_file:
+        with open(PATH_TO_DOCKER_PRIVATE_KEY, 'rb') as key_file:
             private_key = serialization.load_pem_private_key(
                 key_file.read(),
                 password=None,

@@ -183,7 +183,7 @@ def delete():
 
 @app.route('/upload', methods=['POST'])
 @login_required
-def delete():
+def upload():
     if request.method == 'POST':
         
         return None
