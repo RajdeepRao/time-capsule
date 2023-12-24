@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block title %} Home bound {% endblock %}
+{% block content %}
+<div class="container">
+  <h3>VIDEOS</h3>
+  <div class="row">
+{% for c in content_urls['videos'] %}
+  <div class="card col-6">
+    <video class="card-img-top" style="max-height:300px; object-fit:contain; padding-top: 5%;" controls>
+      <source src={{c['url']}} type="video/mp4"/>
+      Your browser does not support the video tag.
+    </video>
+    <div class="card-body">
+      <h4 class="card-title">{{c['title']}}</h4>
+      <p class="card-text"><small class="text-muted">Last updated {{c['date_modified']}}</small></p>
+      <form action="/delete" method="post">
+        <!-- Have this here to pass the source route to delete func so it can redirect back here after delete -->
+        <!-- Make sure value = name of the python function we want to redirect to -->
+        <input type="hidden" name="route" value="videos" />
+        <button name="deleteBtn" value="{{c}}" class="btn btn-primary" type="submit">Delete</button>
+      </form>
+    </div>
+  </div>
+{% endfor %}
+  </div>
+</div>
+
+{% endblock %}

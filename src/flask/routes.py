@@ -80,15 +80,20 @@ def get_user_content(user_id):
     content_urls['videos'] = sorted(content_urls['videos'], key=lambda c:c['date_modified'], reverse=True)
     content_urls['images'] = sorted(content_urls['images'], key=lambda c:c['date_modified'], reverse=True)
     content_urls['text'] = sorted(content_urls['text'], key=lambda c:c['date_modified'], reverse=True)
-    print(content_urls)
     return content_urls
 
 @app.route('/', methods=['GET'])
 @login_required
 def home():
-    print(session)
     content_urls = get_user_content(session['user_id'])
     return render_template('index.html', content_urls=content_urls)
+
+@app.route('/videos', methods=['GET'])
+@login_required
+def videos():
+    # Todo: Room for optimizing the get_user_content() function and the FE Template
+    content_urls = get_user_content(session['user_id'])
+    return render_template('videos.html', content_urls=content_urls)
 
 @app.route('/_meta', methods=['GET'])
 def authenticate_test():
@@ -160,6 +165,28 @@ def logout():
     session.clear()
     time_capsule_pyrebase_obj.sign_user_out()
     return redirect(url_for('login'))
+
+@app.route('/delete', methods=['POST'])
+@login_required
+def delete():
+    if request.method == 'POST':
+        request_content = request.form.get('deleteBtn')
+        # Replace single quotes with double quotes to make it valid json
+        request_content = request_content.replace("\'", "\"")
+        request_content = json.loads(request_content)
+        response = s3_client.delete_object(
+            Bucket=BUCKET_NAME,
+            Key=f"{session['user_id']}/{request_content['title']}"
+        )
+        source_route = request.form.get('route')
+        return redirect(url_for(source_route))
+
+@app.route('/upload', methods=['POST'])
+@login_required
+def upload():
+    if request.method == 'POST':
+        
+        return None
 
 if __name__ == "__main__":
     port = int(os.environ.get('PORT', 5000))
