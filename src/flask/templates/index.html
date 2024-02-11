@@ -8,7 +8,7 @@
   <div class="row" >
 {% for c in content_urls['images'] %}
     <div class="card col-sm-3 ml-2 mt-2">
-      <img class="card-img-top" style="max-height:200px; object-fit:contain; padding-top: 5%;" src={{c['url']}} alt="Card image">
+      <a href="{{c['url']}}" download="{{c['title']}}"><img class="card-img-top" style="max-height:200px; object-fit:contain; padding-top: 5%;" src={{c['url']}} alt="Card image"></a>
       <div class="card-body">
         <h4 class="card-title">{{c['title']}}</h4>
         <p class="card-text"><small class="text-muted">Last updated {{c['date_modified']}}</small></p>

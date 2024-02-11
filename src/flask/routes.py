@@ -9,8 +9,10 @@ import os
 import requests
 from requests.exceptions import HTTPError
 import boto3
+from boto3.s3.transfer import TransferConfig
 from temp_secrets import aws_secrets # Todo: use param store or something in prod
 import datetime
+from werkzeug.utils import secure_filename
 
 # local
 from utils.firebase_admin import TimeCapsuleFirebaseAdminObj
@@ -29,9 +31,12 @@ s3_client = boto3.client('s3',
                 aws_secret_access_key=aws_secrets['AWS_SECRET_ACCESS_KEY'],
                 region_name='us-east-1')
 BUCKET_NAME='time-capsule-media'
-VIDEO_FILE_FORMATS = ['mp4']
+VIDEO_FILE_FORMATS = ['mp4', 'avi', 'mov']
 IMAGE_FILE_FORMATS = ['jpg','jpeg','png','gif','svg']
+SUPPORTED_EXTENSIONS = set(VIDEO_FILE_FORMATS + IMAGE_FILE_FORMATS)
 
+# Set the desired multipart threshold value (5GB)
+GB = 1024 ** 3
 # To render the base app nav bar based on user session
 @app.context_processor
 def is_logged_in():
@@ -62,7 +67,7 @@ def get_user_content(user_id):
     content_urls = {
         'images':[],
         'videos':[],
-        'text':[]
+        'other_formats':[]
         }
     for content in contents:
         if content['Size']>0:
@@ -76,10 +81,10 @@ def get_user_content(user_id):
             elif file_format in IMAGE_FILE_FORMATS:
                 content_urls['images'].append({'url':signed_url, 'title': key.split('/')[-1], 'date_modified':date_modified})
             else:
-                content_urls['text'].append({'url':signed_url, 'title': key.split('/')[-1], 'date_modified':date_modified})
+                content_urls['other_formats'].append({'url':signed_url, 'title': key.split('/')[-1], 'date_modified':date_modified})
     content_urls['videos'] = sorted(content_urls['videos'], key=lambda c:c['date_modified'], reverse=True)
     content_urls['images'] = sorted(content_urls['images'], key=lambda c:c['date_modified'], reverse=True)
-    content_urls['text'] = sorted(content_urls['text'], key=lambda c:c['date_modified'], reverse=True)
+    content_urls['other_formats'] = sorted(content_urls['other_formats'], key=lambda c:c['date_modified'], reverse=True)
     return content_urls
 
 @app.route('/', methods=['GET'])
@@ -94,6 +99,13 @@ def videos():
     # Todo: Room for optimizing the get_user_content() function and the FE Template
     content_urls = get_user_content(session['user_id'])
     return render_template('videos.html', content_urls=content_urls)
+
+@app.route('/other_formats', methods=['GET'])
+@login_required
+def other_formats():
+    # Todo: Room for optimizing the get_user_content() function and the FE Template
+    content_urls = get_user_content(session['user_id'])
+    return render_template('other_formats.html', content_urls=content_urls)
 
 @app.route('/_meta', methods=['GET'])
 def authenticate_test():
@@ -179,14 +191,35 @@ def delete():
             Key=f"{session['user_id']}/{request_content['title']}"
         )
         source_route = request.form.get('route')
+        # ipdb.set_trace()
         return redirect(url_for(source_route))
 
-@app.route('/upload', methods=['POST'])
+@app.route('/upload', methods=['GET', 'POST'])
 @login_required
 def upload():
     if request.method == 'POST':
-        
-        return None
+        if "user_file" not in request.files:
+            return "No user_file key in request.files"
+
+        file = request.files["user_file"]
+
+        if file.filename == "":
+            flash('Please select a file.', category='error')
+
+        if file:
+            file.filename = secure_filename(file.filename)
+            config = TransferConfig(multipart_threshold=1*GB, use_threads=True, max_concurrency=2)
+            s3_client.upload_fileobj(file, BUCKET_NAME, f"{session['user_id']}/{file.filename}", Config=config)
+            extension = file.filename.lower().split('.')[-1]
+            print(extension)
+            if extension not in SUPPORTED_EXTENSIONS:
+                flash('This extension is not supported at the moment. Contact the developer for more info. Your file is in the "other file formats" section.', category='success')
+                return redirect("/other_formats")
+            elif extension in VIDEO_FILE_FORMATS:
+                return redirect("/videos")
+        return redirect("/")
+
+    return render_template('upload.html')
 
 if __name__ == "__main__":
     port = int(os.environ.get('PORT', 5000))
