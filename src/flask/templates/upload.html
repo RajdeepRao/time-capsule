@@ -2,9 +2,15 @@
 {% block title %} Home bound {% endblock %}
 {% block content %}
 
-<form action="/upload" method="post" enctype="multipart/form-data">
-    <input type="file" name="user_file">
-    <input type="submit" value="Upload">
-  </form>
-
+<form id="frmOptions" action="/upload" method="post" enctype="multipart/form-data" class="span12">
+    <div class="row-fluid">   
+        <div class="form-group">
+            <label class="control-label">Select File</label>
+            <div class="input-group">
+                <input class="form-control" id="formFile" type="file" name="user_file">
+                <input class="input-group-btn btn btn-default go inline" type="submit" value="Upload">
+            </div>
+        </div>
+    </div>
+</form>
 {% endblock %}
