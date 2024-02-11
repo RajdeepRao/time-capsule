@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block title %} Home bound {% endblock %}
+{% block content %}
+<div class="container">
+  <h3>Miscellaneous File Formats</h3>
+  <div class="row">
+{% for c in content_urls['other_formats'] %}
+  <div class="card col-12">
+    <div class="card-body">
+      <h4 class="card-title">{{c['title']}}</h4>
+      <a href="{{c['url']}}" download="{{c['title']}}">Download</a>
+      <p class="card-text"><small class="text-muted">Last updated {{c['date_modified']}}</small></p>
+      <form action="/delete" method="post">
+        <!-- Have this here to pass the source route to delete func so it can redirect back here after delete -->
+        <!-- Make sure value = name of the python function we want to redirect to -->
+        <input type="hidden" name="route" value="other_formats" />
+        <button name="deleteBtn" value="{{c}}" class="btn btn-primary" type="submit">Delete</button>
+      </form>
+    </div>
+  </div>
+{% endfor %}
+  </div>
+</div>
+
+{% endblock %}

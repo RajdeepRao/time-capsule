@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+{% block title %} Home bound {% endblock %}
+{% block content %}
+
+<form action="/upload" method="post" enctype="multipart/form-data">
+    <input type="file" name="user_file">
+    <input type="submit" value="Upload">
+  </form>
+
+{% endblock %}
