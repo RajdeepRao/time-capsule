@@ -17,3 +17,5 @@ docker tag time-capsule:manual-test 926846101699.dkr.ecr.us-east-1.amazonaws.com
 6. Create an ALB
 7. Create sec groups
 8. Create an ECS Service
+
+terraform plan -out plan -no-color > plan.txt
