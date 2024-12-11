@@ -87,6 +87,10 @@ def get_user_content(user_id):
     content_urls['other_formats'] = sorted(content_urls['other_formats'], key=lambda c:c['date_modified'], reverse=True)
     return content_urls
 
+@app.route('/health-check', methods=['GET'])
+def health_check():
+    return "Health check passed.", 200
+
 @app.route('/', methods=['GET'])
 @login_required
 def home():
@@ -222,5 +226,5 @@ def upload():
     return render_template('upload.html')
 
 if __name__ == "__main__":
-    port = int(os.environ.get('PORT', 5000))
-    app.run(debug=True, host='0.0.0.0', port=5000)
+    port = int(os.environ.get('PORT', 80))
+    app.run(debug=True, host='0.0.0.0', port=80)

@@ -1,0 +1,21 @@
+Deploy steps to write in TF
+
+1. Create ECS Cluster
+2. Create ECR Repo
+3. Steps to build and deploy image
+
+Set AWS_PROFILE
+
+aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 926846101699.dkr.ecr.us-east-1.amazonaws.com
+
+docker build . -t time-capsule:manual-test
+
+docker tag time-capsule:manual-test 926846101699.dkr.ecr.us-east-1.amazonaws.com/time-capsule-manual:latest
+
+4. Create task-role and task-exec-role
+5. Create a task def
+6. Create an ALB
+7. Create sec groups
+8. Create an ECS Service
+
+terraform plan -out plan -no-color > plan.txt
