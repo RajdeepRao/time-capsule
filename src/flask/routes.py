@@ -97,6 +97,7 @@ def home():
     content_urls = get_user_content(session['user_id'])
     return render_template('index.html', content_urls=content_urls)
 
+
 @app.route('/videos', methods=['GET'])
 @login_required
 def videos():
@@ -226,5 +227,5 @@ def upload():
     return render_template('upload.html')
 
 if __name__ == "__main__":
-    port = int(os.environ.get('PORT', 80))
-    app.run(debug=True, host='0.0.0.0', port=80)
+    port = int(os.environ.get('PORT', 8081))
+    app.run(debug=True, host='0.0.0.0', port=port)
