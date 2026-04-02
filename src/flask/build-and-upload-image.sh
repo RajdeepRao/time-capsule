@@ -1,6 +1,6 @@
 #!/bin/bash
 # Build and upload docker image
-status="Building image ....."
+status="Building image ......"
 echo $status
 docker build . -t time-capsule:latest
 status="Uploading image to ECR....."
