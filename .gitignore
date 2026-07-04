@@ -38,3 +38,6 @@ firebase*.json
 firebase_config.py
 temp_secrets.py
 *_private_key*
+
+# Python venv
+**/.venv/
