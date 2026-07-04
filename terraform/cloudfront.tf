@@ -83,7 +83,14 @@ resource "aws_cloudfront_distribution" "media_cloudfront_dist" {
 resource "aws_cloudfront_public_key" "cf_public_key" {
   comment     = "Timecapsule cloudfront public key created by terraform"
   encoded_key = file("timecapsule_cf_public_key.pem")
-  name        = "timecapsule_cf_public_key_tf"
+  # name_prefix + create_before_destroy so key rotations don't hit CloudFront's
+  # "public key still in use by a key group" delete error: the new key is
+  # created (unique name), the key group is repointed, then the old key is removed.
+  name_prefix = "timecapsule_cf_public_key_tf"
+
+  lifecycle {
+    create_before_destroy = true
+  }
 }
 
 resource "aws_cloudfront_key_group" "cf_public_keygroup" {
