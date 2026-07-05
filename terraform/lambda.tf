@@ -28,15 +28,19 @@ resource "aws_lambda_function" "web" {
 }
 
 resource "aws_lambda_function_url" "web" {
-  function_name      = aws_lambda_function.web.function_name
-  authorization_type = "NONE" # public web app; it does its own Firebase auth
+  function_name = aws_lambda_function.web.function_name
+  # AWS_IAM because this account blocks anonymous (NONE) function URLs. Public
+  # access is served through CloudFront + OAC (app_cloudfront.tf), which signs
+  # each origin request as the CloudFront service principal (SigV4).
+  authorization_type = "AWS_IAM"
 }
 
-# Required for anonymous callers to invoke the Function URL.
-resource "aws_lambda_permission" "function_url" {
-  statement_id           = "AllowPublicInvokeFunctionUrl"
+# Only this app's CloudFront distribution may invoke the Function URL.
+resource "aws_lambda_permission" "cloudfront_invoke_url" {
+  statement_id           = "AllowCloudFrontInvokeFunctionUrl"
   action                 = "lambda:InvokeFunctionUrl"
   function_name          = aws_lambda_function.web.function_name
-  principal              = "*"
-  function_url_auth_type = "NONE"
+  principal              = "cloudfront.amazonaws.com"
+  source_arn             = aws_cloudfront_distribution.app_dist.arn
+  function_url_auth_type = "AWS_IAM"
 }

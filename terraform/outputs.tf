@@ -3,8 +3,13 @@ output "ecr_repository_url" {
   value       = aws_ecr_repository.time_capsule.repository_url
 }
 
+output "app_url" {
+  description = "Public HTTPS URL of the app (CloudFront in front of the Lambda)"
+  value       = "https://${aws_cloudfront_distribution.app_dist.domain_name}"
+}
+
 output "function_url" {
-  description = "Public HTTPS URL of the app"
+  description = "Lambda Function URL (AWS_IAM; only CloudFront can invoke it)"
   value       = aws_lambda_function_url.web.function_url
 }
 
