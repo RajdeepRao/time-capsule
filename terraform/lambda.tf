@@ -27,20 +27,5 @@ resource "aws_lambda_function" "web" {
   depends_on = [aws_iam_role_policy_attachment.lambda_basic]
 }
 
-resource "aws_lambda_function_url" "web" {
-  function_name = aws_lambda_function.web.function_name
-  # AWS_IAM because this account blocks anonymous (NONE) function URLs. Public
-  # access is served through CloudFront + OAC (app_cloudfront.tf), which signs
-  # each origin request as the CloudFront service principal (SigV4).
-  authorization_type = "AWS_IAM"
-}
-
-# Only this app's CloudFront distribution may invoke the Function URL.
-resource "aws_lambda_permission" "cloudfront_invoke_url" {
-  statement_id           = "AllowCloudFrontInvokeFunctionUrl"
-  action                 = "lambda:InvokeFunctionUrl"
-  function_name          = aws_lambda_function.web.function_name
-  principal              = "cloudfront.amazonaws.com"
-  source_arn             = aws_cloudfront_distribution.app_dist.arn
-  function_url_auth_type = "AWS_IAM"
-}
+# The app is fronted by an API Gateway HTTP API (see apigateway.tf), which
+# invokes this function via a standard AWS_PROXY integration. No Function URL.
