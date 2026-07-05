@@ -1,5 +1,11 @@
 resource "aws_s3_bucket" "media_bucket" {
     bucket = "time-capsule-media"
+
+    # This bucket holds live media data. prevent_destroy makes terraform ERROR
+    # on any plan that would destroy or replace it, guarding against data loss.
+    lifecycle {
+      prevent_destroy = true
+    }
 }
 
 resource "aws_s3_bucket_acl" "media_bucket_acl" {

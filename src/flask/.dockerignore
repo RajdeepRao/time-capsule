@@ -1,0 +1,18 @@
+# Never bake secrets or local-only files into the image.
+# In prod the app reads config from env vars + SSM (see config.py).
+temp_secrets.py
+firebase_config.py
+firebaseAdminConfig.json
+*_private_key*
+*.pem
+
+# Local dev cruft
+.venv/
+__pycache__/
+*.py[cod]
+*.log
+.git
+.gitignore
+build-and-run.sh
+clean-up.sh
+kill-old-time-capsule.sh
