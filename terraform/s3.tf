@@ -1,11 +1,11 @@
 resource "aws_s3_bucket" "media_bucket" {
-    bucket = "time-capsule-media"
+  bucket = "time-capsule-media"
 
-    # This bucket holds live media data. prevent_destroy makes terraform ERROR
-    # on any plan that would destroy or replace it, guarding against data loss.
-    lifecycle {
-      prevent_destroy = true
-    }
+  # This bucket holds live media data. prevent_destroy makes terraform ERROR
+  # on any plan that would destroy or replace it, guarding against data loss.
+  lifecycle {
+    prevent_destroy = true
+  }
 }
 
 resource "aws_s3_bucket_acl" "media_bucket_acl" {
@@ -21,7 +21,7 @@ resource "aws_s3_bucket_policy" "allow_access_to_cloudfront" {
 data "aws_iam_policy_document" "allow_access_to_cloudfront" {
   statement {
     sid = "ToAllowAccessToCloudFront"
-    
+
     principals {
       type        = "Service"
       identifiers = ["cloudfront.amazonaws.com"]
