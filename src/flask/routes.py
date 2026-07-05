@@ -10,27 +10,23 @@ import requests
 from requests.exceptions import HTTPError
 import boto3
 from boto3.s3.transfer import TransferConfig
-from temp_secrets import aws_secrets # Todo: use param store or something in prod
 import datetime
 from werkzeug.utils import secure_filename
 
 # local
+import config
 from utils.firebase_admin import TimeCapsuleFirebaseAdminObj
 from utils.pyrebase import TimeCapsulePyrebaseObj
 from utils.signed_cf_url_helper import generate_signed_urls
-from temp_secrets import FLASK_SECRET_KEY
 
 app = Flask(__name__)
-# Todo: Come back and env var this
-app.secret_key = FLASK_SECRET_KEY
+app.secret_key = config.FLASK_SECRET_KEY
 # Init firebase obj
 time_capsule_firebase_admin_obj = TimeCapsuleFirebaseAdminObj()
 time_capsule_pyrebase_obj = TimeCapsulePyrebaseObj()
-s3_client = boto3.client('s3',
-                aws_access_key_id=aws_secrets['AWS_ACCESS_KEY_ID'],
-                aws_secret_access_key=aws_secrets['AWS_SECRET_ACCESS_KEY'],
-                region_name='us-east-1')
-BUCKET_NAME='time-capsule-media'
+# boto3 uses the default credential chain (local profile / Lambda execution role).
+s3_client = boto3.client('s3', region_name=config.AWS_REGION)
+BUCKET_NAME = config.BUCKET_NAME
 VIDEO_FILE_FORMATS = ['mp4', 'avi', 'mov']
 IMAGE_FILE_FORMATS = ['jpg','jpeg','png','gif','svg']
 SUPPORTED_EXTENSIONS = set(VIDEO_FILE_FORMATS + IMAGE_FILE_FORMATS)

@@ -41,3 +41,6 @@ temp_secrets.py
 
 # Python venv
 **/.venv/
+
+# Terraform variable files (may contain secrets)
+*.tfvars

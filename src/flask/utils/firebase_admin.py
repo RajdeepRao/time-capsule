@@ -1,6 +1,10 @@
+import json
+
 import firebase_admin
 from firebase_admin import credentials, auth
 from firebase_admin.auth import UserNotFoundError
+
+import config
 
 '''
 This is a Firebase Obj that we create that wraps all our firebase_admin related use cases
@@ -9,7 +13,7 @@ Get User
 '''
 class TimeCapsuleFirebaseAdminObj:
     def __init__(self):
-        cred = credentials.Certificate("firebaseAdminConfig.json")
+        cred = credentials.Certificate(json.loads(config.get_firebase_admin_json()))
         self.firebase = firebase_admin.initialize_app(cred)
     
     def create_user(self, email, password):

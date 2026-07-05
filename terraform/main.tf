@@ -2,7 +2,7 @@ terraform {
   required_providers {
     aws = {
       source  = "hashicorp/aws"
-      version = "~> 4.16"
+      version = "~> 5.51" # >= 5.51 for CloudFront OAC with lambda origin type
     }
   }
 

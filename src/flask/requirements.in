@@ -1,4 +1,5 @@
 Flask
+gunicorn
 firebase_admin
 Pyrebase4
 requests
